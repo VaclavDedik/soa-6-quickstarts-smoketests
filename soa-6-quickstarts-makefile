@@ -11,7 +11,7 @@ bpel-service/jms_binding:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
-	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-bpel-jms-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
 	mvn jboss-as:deploy
 	mvn exec:java
@@ -47,7 +47,7 @@ camel-jms-binding:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
-	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-camel-jms-binding-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
 	mvn jboss-as:deploy
 	mvn exec:java
@@ -93,7 +93,7 @@ demos/policy-security-basic demos/policy-security-wss-username:
 	keytool -genkey -alias tomcat -keyalg RSA -keypass changeit -storepass changeit \
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
-	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend
+	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
 	${JBOSS_HOME}/bin/standalone.sh &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
@@ -107,7 +107,7 @@ demos/policy-security-cert:
 	keytool -genkey -alias tomcat -keyalg RSA -keypass changeit -storepass changeit \
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
-	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend
+	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
 	${JBOSS_HOME}/bin/standalone.sh &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
@@ -125,7 +125,7 @@ demos/policy-security-wss-signencrypt:
 	keytool -genkey -alias tomcat -keyalg RSA -keypass changeit -storepass changeit \
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
-	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend
+	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
 	${JBOSS_HOME}/bin/standalone.sh &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
@@ -138,7 +138,7 @@ demos/policy-transaction:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
-	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-demo-policy-transaction-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
 	mvn jboss-as:deploy
 	mvn exec:java
@@ -164,7 +164,7 @@ jca-inflow-hornetq:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
-	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-jca-inflow-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
 	mvn jboss-as:deploy
 	mvn exec:java
@@ -173,7 +173,7 @@ jca-outbound-hornetq:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
-	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-jca-outbound-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
 	mvn jboss-as:deploy
 	mvn exec:java
