@@ -211,7 +211,7 @@ soap-attachment soap-mtom:
 	mvn jboss-as:deploy
 	mvn exec:java
 
-soap-addressing:
+soap-binding-rpc:
 	mvn clean install
 	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
