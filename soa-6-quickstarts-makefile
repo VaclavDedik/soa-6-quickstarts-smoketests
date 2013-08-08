@@ -80,7 +80,7 @@ camel-sql-binding camel-jpa-binding demos/helpdesk-webapp:
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 
-demos/cluser demos/multiApp demos/policy-security-saml:
+demos/cluster demos/multiApp demos/policy-security-saml:
 	# Very complicated, needs to be dealt with later
 	false
 
