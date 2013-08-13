@@ -1,4 +1,4 @@
-SLEEP_TIME=1m 30s
+SLEEP_TIME=1m
 
 bean-service bpel-service/loan_approval bpel-service/say_hello bpel-service/simple_correlation bpm-service camel-jaxb demos/orders remote-invoker transform-jaxb transform-xslt validate-xml:
 	mvn clean install
