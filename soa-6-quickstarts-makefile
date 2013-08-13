@@ -155,14 +155,23 @@ http-binding:
 	mvn exec:java -Dexec.args="vineyard"
 
 jca-inflow-activemq jca-outbound-activemq:
-	mvn clean install
-	wget http://repo1.maven.org/maven2/org/apache/activemq/activemq-rar/5.8.0/activemq-rar-5.8.0.rar
-	mv activemq-rar-5.8.0.rar ${JBOSS_HOME}/standalone/deployments/activemq-rar.rar
-	# download and start of activemq required here
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
-	sleep ${SLEEP_TIME}
-	mvn jboss-as:deploy
-	mvn exec:java
+	echo "Needs running ActiveMQ"
+	false
+	#mvn clean install
+	#wget http://repo1.maven.org/maven2/org/apache/activemq/activemq-rar/5.8.0/activemq-rar-5.8.0.rar
+	#mv activemq-rar-5.8.0.rar ${JBOSS_HOME}/standalone/deployments/activemq-rar.rar
+	## download and start of activemq required here
+	#${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
+	#sleep ${SLEEP_TIME}
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar:add(archive=activemq-ra.rar)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/connection-definitions=QueueConnectionFactory:add(class-name=org.apache.activemq.ra.ActiveMQManagedConnectionFactory,jndi-name=java:/JmsXA)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/connection-definitions=QueueConnectionFactory/config-properties=ServerUrl:add(value=tcp://127.0.0.1:61616)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/admin-objects=ShippingQueue:add(class-name=org.apache.activemq.command.ActiveMQQueue,jndi-name=java:/ShippingQueue)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/admin-objects=ShippingQueue/config-properties=PhysicalName:add(value=ShippingQueue)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/admin-objects=FillingStockQueue:add(class-name=org.apache.activemq.command.ActiveMQQueue,jndi-name=java:/FillingStockQueue)'
+	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/admin-objects=FillingStockQueue/config-properties=PhysicalName:add(value=FillingStockQueue)'
+	#mvn jboss-as:deploy
+	#mvn exec:java
 
 jca-inflow-hornetq:
 	mvn clean install
