@@ -99,7 +99,8 @@ demos/policy-security-basic demos/policy-security-wss-username:
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
-	# restart might be required here
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
+	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="confidentiality clientAuthentication"
 
@@ -117,7 +118,8 @@ demos/policy-security-cert:
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=policy-security-cert/authentication=classic:add(login-modules=[{"code"=>"org.switchyard.security.login.CertificateLoginModule", "flag"=>"required", "module-options"=>[("keyStoreLocation"=>"${jboss.server.config.dir}/users.jks"),("keyStorePassword"=>"changeit"),("rolesProperties"=>"${jboss.server.config.dir}/roles.properties")]}])'
 	cp users.jks ${JBOSS_HOME}/standalone/configuration/
 	cp roles.properties ${JBOSS_HOME}/standalone/configuration/
-	# restart might be required here
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
+	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="confidentiality signencrypt"
 
@@ -131,7 +133,8 @@ demos/policy-security-wss-signencrypt:
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
-	# restart might be required here
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
+	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="confidentiality signencrypt"
 
