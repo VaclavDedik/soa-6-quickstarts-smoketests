@@ -2,14 +2,14 @@ SLEEP_TIME=1m
 
 bean-service bpel-service/loan_approval bpel-service/say_hello bpel-service/simple_correlation bpm-service camel-jaxb demos/orders remote-invoker transform-jaxb transform-xslt validate-xml:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java
 
 bpel-service/jms_binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-bpel-jms-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
@@ -18,7 +18,7 @@ bpel-service/jms_binding:
 
 bpel-service/xts_subordinate_wsba bpel-service/xts_wsat:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/extension=org.jboss.as.xts:add'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=xts:add(url="http://${jboss.bind.address:127.0.0.1}:8080/ws-c11/ActivationService")'
@@ -33,20 +33,20 @@ camel-binding:
 
 camel-bus-cdi camel-quartz-binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 
 # camel-mail-binding: mail needs to be setup if there are to be no warnings in the logs
 camel-ftp-binding camel-mail-binding:
 	mvn clean install -Dmaven.test.skip=true
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 
 camel-jms-binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-camel-jms-binding-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
@@ -56,7 +56,7 @@ camel-jms-binding:
 # camel-netty-binding: we should also consider adding security settings to standalone-full.xml and run $ mvn exec:java without -Pudp as mentioned in readme
 camel-netty-binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Pudp
@@ -67,7 +67,7 @@ camel-service:
 
 camel-soap-proxy:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	cp target/ReverseService.war ${JBOSS_HOME}/standalone/deployments
 	mvn jboss-as:deploy
@@ -77,7 +77,7 @@ camel-soap-proxy:
 # demos/helpdesk-webapp: some aditional mvn exec:java commands could be executed too, see readme
 camel-sql-binding camel-jpa-binding demos/helpdesk-webapp:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 
@@ -95,7 +95,7 @@ demos/policy-security-basic demos/policy-security-wss-username:
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
 	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
@@ -110,7 +110,7 @@ demos/policy-security-cert:
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
 	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="../standalone/configuration/tomcat.jks")'
@@ -129,7 +129,7 @@ demos/policy-security-wss-signencrypt:
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
 	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
@@ -140,7 +140,7 @@ demos/policy-security-wss-signencrypt:
 
 demos/policy-transaction:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-demo-policy-transaction-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
@@ -149,7 +149,7 @@ demos/policy-transaction:
 
 http-binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="vineyard"
@@ -161,7 +161,7 @@ jca-inflow-activemq jca-outbound-activemq:
 	#wget http://repo1.maven.org/maven2/org/apache/activemq/activemq-rar/5.8.0/activemq-rar-5.8.0.rar
 	#mv activemq-rar-5.8.0.rar ${JBOSS_HOME}/standalone/deployments/activemq-rar.rar
 	## download and start of activemq required here
-	#${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	#${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	#sleep ${SLEEP_TIME}
 	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar:add(archive=activemq-ra.rar)'
 	#${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=resource-adapters/resource-adapter=activemq-ra.rar/connection-definitions=QueueConnectionFactory:add(class-name=org.apache.activemq.ra.ActiveMQManagedConnectionFactory,jndi-name=java:/JmsXA)'
@@ -175,7 +175,7 @@ jca-inflow-activemq jca-outbound-activemq:
 
 jca-inflow-hornetq:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-jca-inflow-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
@@ -184,7 +184,7 @@ jca-inflow-hornetq:
 
 jca-outbound-hornetq:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
 	cp src/test/resources/switchyard-quickstart-jca-outbound-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
@@ -193,7 +193,7 @@ jca-outbound-hornetq:
 
 rest-binding:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="new"
@@ -212,21 +212,21 @@ rules-interview rules-interview-container:
 
 soap-addressing:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="Boeing 10"
 
 soap-attachment soap-mtom:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java
 
 soap-binding-rpc:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn exec:java -Dexec.args="Einstein"
@@ -237,7 +237,7 @@ transform-json:
 
 transform-smooks:
 	mvn clean install
-	${JBOSS_HOME}/bin/standalone.sh | tee server.log &
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy
 	mvn -Dtest=ServiceTransformationTest test
