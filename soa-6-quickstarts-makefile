@@ -18,9 +18,10 @@ bpel-service/jms_binding:
 
 bpel-service/xts_subordinate_wsba bpel-service/xts_wsat:
 	mvn clean install
-	cp ${JBOSS_HOME}/docs/examples/configs/standalone-xts.xml ${JBOSS_HOME}/standalone/configuration/
-	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-xts.xml &
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml &
 	sleep ${SLEEP_TIME}
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/extension=org.jboss.as.xts:add'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=xts:add(url="http://${jboss.bind.address:127.0.0.1}:8080/ws-c11/ActivationService")'
 	mvn jboss-as:deploy
 
 camel-amqp-binding:
