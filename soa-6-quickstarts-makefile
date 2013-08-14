@@ -112,7 +112,7 @@ demos/policy-security-basic demos/policy-security-wss-username:
 	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
-	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="\${jboss.server.config.dir}/tomcat.jks")'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
@@ -146,7 +146,7 @@ demos/policy-security-wss-signencrypt:
 	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
-	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="${jboss.server.config.dir}/tomcat.jks")'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="\${jboss.server.config.dir}/tomcat.jks")'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
