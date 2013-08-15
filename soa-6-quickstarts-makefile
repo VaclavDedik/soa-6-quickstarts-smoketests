@@ -81,10 +81,6 @@ camel-sql-binding camel-jpa-binding demos/helpdesk-webapp:
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
 
-demos/policy-security-saml:
-	# Very complicated, needs to be dealt with later
-	false
-
 demos/cluster:
 	mvn clean install -s ${SETTINGS}
 	cp -R ${JBOSS_HOME}/standalone ${JBOSS_HOME}/node1
@@ -135,19 +131,39 @@ demos/policy-security-cert:
 	keytool -genkey -alias tomcat -keyalg RSA -keypass changeit -storepass changeit \
 			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
 			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
-	${JBOSS_HOME}/bin/add-user.sh -a -u kermit -p the-frog-1 -r ApplicationRealm -ro friend -s
 	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
 	sleep ${SLEEP_TIME}
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
-	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="../standalone/configuration/tomcat.jks")'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="$${jboss.server.config.dir}/tomcat.jks")'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=policy-security-cert/:add(cache-type=default)'
-	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=policy-security-cert/authentication=classic:add(login-modules=[{"code"=>"org.switchyard.security.login.CertificateLoginModule", "flag"=>"required", "module-options"=>[("keyStoreLocation"=>"${jboss.server.config.dir}/users.jks"),("keyStorePassword"=>"changeit"),("rolesProperties"=>"${jboss.server.config.dir}/roles.properties")]}])'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=policy-security-cert/authentication=classic:add(login-modules=[{"code"=>"org.switchyard.security.login.CertificateLoginModule", "flag"=>"required", "module-options"=>[("keyStoreLocation"=>"$${jboss.server.config.dir}/users.jks"),("keyStorePassword"=>"changeit"),("rolesProperties"=>"$${jboss.server.config.dir}/roles.properties")]}])'
 	cp users.jks ${JBOSS_HOME}/standalone/configuration/
 	cp roles.properties ${JBOSS_HOME}/standalone/configuration/
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
 	mvn exec:java -Dexec.args="confidentiality signencrypt" -s ${SETTINGS}
+
+demos/policy-security-saml:
+	mvn clean install -s ${SETTINGS}
+	keytool -genkey -alias tomcat -keyalg RSA -keypass changeit -storepass changeit \
+			-keystore ${JBOSS_HOME}/standalone/configuration/tomcat.jks \
+			-dname "CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown"
+	${JBOSS_HOME}/bin/standalone.sh | tee ${WORKSPACE}/server.log &
+	sleep ${SLEEP_TIME}
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="$${jboss.server.config.dir}/tomcat.jks")'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=picketlink-sts/:add(cache-type=default)'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=picketlink-sts/authentication=classic:add(login-modules=[{"code"=>"UserRoles", "flag"=>"required", "module-options"=>[("userProperties"=>"users.properties"),("rolesProperties"=>"roles.properties")]}])'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=saml-validate-token/:add(cache-type=default)'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=saml-validate-token/authentication=classic:add(login-modules=[{"code"=>"org.picketlink.identity.federation.core.wstrust.auth.STSValidatingLoginModule", "flag"=>"required", "module-options"=>[("configFile"=>"$${jboss.server.config.dir}/sts-client.properties"),("useOptionsCredentials"=>"true")]}])'
+	cp sts-client.properties ${JBOSS_HOME}/standalone/configuration/
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
+	sleep ${SLEEP_TIME}
+	cp picketlink-sts.war ${JBOSS_HOME}/standalone/deployments/
+	sleep 20
+	mvn jboss-as:deploy -s ${SETTINGS}
+	mvn exec:java -Dexec.args="confidentiality clientAuthentication" -s ${SETTINGS}
 
 demos/policy-security-wss-signencrypt:
 	mvn clean install -s ${SETTINGS}
