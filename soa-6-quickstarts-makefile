@@ -142,7 +142,7 @@ demos/policy-security-cert:
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/:shutdown(restart=true)'
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
-	mvn exec:java -Dexec.args="confidentiality signencrypt" -s ${SETTINGS}
+	mvn exec:java -Dexec.args="confidentiality clientAuthentication" -s ${SETTINGS}
 
 demos/policy-security-saml:
 	mvn clean install -s ${SETTINGS}
