@@ -81,7 +81,7 @@ camel-sql-binding camel-jpa-binding demos/helpdesk-webapp:
 	sleep ${SLEEP_TIME}
 	mvn jboss-as:deploy -s ${SETTINGS}
 
-demos/multiApp demos/policy-security-saml:
+demos/policy-security-saml:
 	# Very complicated, needs to be dealt with later
 	false
 
@@ -102,6 +102,18 @@ demos/cluster:
 demos/helpdesk:
 	mvn clean install -s ${SETTINGS}
 	mvn -Dtest=HelpDeskTests test -s ${SETTINGS}
+
+demos/multiApp:
+	mvn clean install -s ${SETTINGS}
+	${JBOSS_HOME}/bin/standalone.sh --server-config=standalone-full.xml | tee ${WORKSPACE}/server.log &
+	sleep ${SLEEP_TIME}
+	${JBOSS_HOME}/bin/add-user.sh -a -u guest -p guestp.1 -r ApplicationRealm -ro guest -s
+	cp order-consumer/src/test/resources/switchyard-quickstart-demo-multi-order-consumer-hornetq-jms.xml ${JBOSS_HOME}/standalone/deployments/
+	cd artifacts; mvn jboss-as:deploy -s ${SETTINGS}
+	cd order-consumer; mvn jboss-as:deploy -s ${SETTINGS}
+	cd order-service; mvn jboss-as:deploy -s ${SETTINGS}
+	cd web; mvn jboss-as:deploy -s ${SETTINGS}
+	cd order-consumer; mvn exec:java -s ${SETTINGS}
 
 demos/policy-security-basic demos/policy-security-wss-username:
 	mvn clean install -s ${SETTINGS}
