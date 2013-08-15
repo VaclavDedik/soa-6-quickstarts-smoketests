@@ -154,7 +154,7 @@ demos/policy-security-saml:
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https:add(socket-binding=https,scheme=https,protocol="HTTP/1.1",secure=true)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=web/connector=https/ssl=configuration:add(name="https",password="changeit",certificate-key-file="$${jboss.server.config.dir}/tomcat.jks")'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=picketlink-sts/:add(cache-type=default)'
-	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=picketlink-sts/authentication=classic:add(login-modules=[{"code"=>"UserRoles", "flag"=>"required", "module-options"=>[("userProperties"=>"users.properties"),("rolesProperties"=>"roles.properties")]}])'
+	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=picketlink-sts/authentication=classic:add(login-modules=[{"code"=>"UsersRoles", "flag"=>"required", "module-options"=>[("usersProperties"=>"users.properties"),("rolesProperties"=>"roles.properties")]}])'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=saml-validate-token/:add(cache-type=default)'
 	${JBOSS_HOME}/bin/jboss-cli.sh --connect --command='/subsystem=security/security-domain=saml-validate-token/authentication=classic:add(login-modules=[{"code"=>"org.picketlink.identity.federation.core.wstrust.auth.STSValidatingLoginModule", "flag"=>"required", "module-options"=>[("configFile"=>"$${jboss.server.config.dir}/sts-client.properties"),("useOptionsCredentials"=>"true")]}])'
 	cp sts-client.properties ${JBOSS_HOME}/standalone/configuration/
